@@ -6,6 +6,8 @@ import 'animate.css';
 import ManageStudents from "./ManageStudents";
 import ManageFaculty from "./ManageFaculty";
 import ManageClasses from "./ManageClasses";
+import AdminAddTeacher from "./AdminAddTeacher";
+import AdminAddStudent from "./AdminAddStudent";
 
 const AdminDashboard = () => {
   const [activePage, setActivePage] = useState("dashboard");
@@ -18,6 +20,10 @@ const AdminDashboard = () => {
         return <ManageFaculty />;
       case "classes":
         return <ManageClasses />;
+      case "addteacher":
+        return <AdminAddTeacher />;
+      case "addstudent":
+        return <AdminAddStudent />;
       default:
         return (
           <div className="container mt-4 animate__animated animate__fadeIn">
@@ -91,6 +97,22 @@ const AdminDashboard = () => {
               onClick={() => setActivePage("classes")}
             >
               Manage Classes
+            </button>
+          </li>
+          <li className="nav-item mb-2">
+            <button
+              className="btn btn-dark text-start w-100"
+              onClick={() => setActivePage("addteacher")}
+            >
+              Add Teachers
+            </button>
+          </li>
+          <li className="nav-item mb-2">
+            <button
+              className="btn btn-dark text-start w-100"
+              onClick={() => setActivePage("addstudent")}
+            >
+              Add Student
             </button>
           </li>
           <li className="nav-item mb-2">
