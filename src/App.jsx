@@ -13,6 +13,12 @@ import TeacherDashboard from "./components/Teacher/TeacherDashboard";
 import ViewSchedule from "./components/Teacher/ViewSchedule";
 import AdminDashboard from "./components/Dashboard/AdminDashboard";
 import ReportsAnalytics from "./components/Dashboard/ReportsAnalytics";
+import StudentViewAttendance from "./components/Student/StudentViewAttendance";
+import ScanQR from "./components/Student/ScanQR";
+import TeacherQRGenerator from "./components/Teacher/TeacherQRGenerator";
+import StudentScanner from "./components/Student/StudentScanner";
+import Notfound from "./components/Notfound";
+
 
 
 function App() {
@@ -24,9 +30,14 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/admindashboard" element={<AdminDashboard />} />
           <Route path="/studentdashboard" element={<StudentDashboard />} />
+          <Route path="/attendance" element={<StudentViewAttendance />} />
+          <Route path="/scan" element={<ScanQR />} />
+          <Route path="/scann" element={<StudentScanner />} />
+          <Route path="/qr" element={<TeacherQRGenerator />} />
           <Route path="/teacherdashboard" element={<TeacherDashboard />} />
           <Route path="/report" element={<ReportsAnalytics />} />
           <Route path="/viewschedule" element={<ViewSchedule />} />
+           <Route path="*" element={<Notfound />} />
         </Routes>
       </Master>
     </Router>
