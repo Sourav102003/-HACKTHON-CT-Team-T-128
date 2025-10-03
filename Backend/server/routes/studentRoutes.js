@@ -8,7 +8,7 @@ routes.post("/student/register",studentController.register)
 routes.post("/teacher/register",teacherController.register)
 routes.post("/teacher/getall",teacherController.getall)
 routes.post("/teacher/getSingle",teacherController.getSingle)
-routes.post("/teacher/getStatus",teacherController.getStatus)
+routes.post("/teacher/changeStatus",teacherController.changeStatus)
 routes.post("/teacher/update",teacherController.update)
 
 routes.post("/student/getall",studentController.getall)
