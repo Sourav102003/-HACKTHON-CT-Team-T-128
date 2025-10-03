@@ -20,7 +20,7 @@ studentroutes.post("/class/getall",studentController.getall)
 studentroutes.post("/class/getSingle",studentController.getSingle)
 studentroutes.post("/class/changeStatus",studentController.changeStatus)
 studentroutes.post("/class/update",studentController.update)
-studentroutes.post("/session/addSession",sessionController.addSession)
+// studentroutes.post("/session/addSession",sessionController.addSession)
 
 
 // studentroutes.post("/attendence/addAttendance",attendanceController.addAttendance)
