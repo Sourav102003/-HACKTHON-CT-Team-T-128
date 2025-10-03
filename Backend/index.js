@@ -9,8 +9,12 @@ seeder.adminreg()
 app.use(express.urlencoded({extended:true}));
 app.use(express.json({limit:'40mb'}));
 
-const routes = require("./server/routes/studentRoutes")
-app.use("/apis",routes)
+const adminroutes = require("./server/routes/adminRoutes")
+app.use("/adminapis",adminroutes)
+const teacherroutes = require("./server/routes/teacherRoutes")
+app.use("/teacherapis",teacherroutes)
+const studentroutes = require("./server/routes/studentRoutes")
+app.use("/studentapis",studentroutes)
 app.listen(5000,(err)=>{
     if(err)
         {
