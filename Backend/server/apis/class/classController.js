@@ -1,4 +1,4 @@
-const classModel = require("../models/classModel");
+const classModel = require("../class/classModel");
 const mongoose = require("mongoose");
 
 // ➤ Add Class

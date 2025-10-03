@@ -4,8 +4,6 @@ const sessionSchema = new mongoose.Schema({
   classId: { type: mongoose.Schema.Types.ObjectId, ref: "classes", required: true }, // Which class
   subjectId: { type: mongoose.Schema.Types.ObjectId, ref: "subjects", required: true }, // Which subject
   teacherId: { type: mongoose.Schema.Types.ObjectId, ref: "teachers", required: true }, // Conducted by teacher
-
-  topic: { type: String, default: "" }, // Optional: topic of lecture
   startTime: { type: Date, required: true }, // Lecture start time
   endTime: { type: Date, required: true },   // Lecture end time
 
