@@ -124,114 +124,138 @@ const getall = (req, res) => {
 
 // Get single teacher by ID
 const getSingle = (req, res) => {
-    const teacherId = req.params.id;
+    var errMsgs = [];
+    if (!req.body._id) {
+        errMsgs.push("id is required");
+    }
 
-    teacherModel.findById(teacherId)
-        .then((teacher) => {
-            if (!teacher) {
-                return res.send({
-                    status: 404,
-                    success: false,
-                    message: "Teacher not found!!"
-                });
-            }
-            res.send({
-                status: 200,
-                success: true,
-                message: "Teacher fetched successfully!!",
-                data: teacher
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send({
-                status: 500,
-                success: false,
-                message: "Internal server error!!"
-            });
+    if (errMsgs.length > 0) {
+        return res.send({
+            status: 422,
+            success: false,
+            message: errMsgs
         });
+    } else {
+        teacherModel.findById(req.body._id)
+            .then((teacherData) => {
+                if (!teacherData) {
+                    return res.send({
+                        status: 404,
+                        success: false,
+                        message: "teacher not found!!"
+                    });
+                } else {
+                    return res.send({
+                        status: 200,
+                        success: true,
+                        message: "teacher fetched successfully!!",
+                        data: teacherData
+                    });
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+                return res.send({
+                    status: 500,
+                    success: false,
+                    message: "Something went wrong!!"
+                });
+            });
+    }
 };
 
 // Change teacher status (enable/disable)
-const getStatus = (req, res) => {
-    const teacherId = req.params.id;
+const changeStatus = async (req, res) => {
+  try {
+    if (!req.body._id) {
+      return res.status(422).send({
+        success: false,
+        message: "_id is required",
+      });
+    }
 
-    teacherModel.findById(teacherId)
-        .then((teacher) => {
-            if (!teacher) {
-                return res.send({
-                    status: 404,
-                    success: false,
-                    message: "Teacher not found!!"
-                });
-            }
+    // 1. Find teacher by ID
+    const teacher = await teacherModel.findById(req.body._id);
+    if (!teacher) {
+      return res.status(404).send({
+        success: false,
+        message: "Patient not found!!",
+      });
+    }
 
-            teacher.status = !teacher.status;
-            teacher.save()
-                .then((updatedTeacher) => {
-                    res.send({
-                        status: 200,
-                        success: true,
-                        message: "Teacher status updated!!",
-                        data: updatedTeacher
-                    });
-                })
-                .catch((err) => {
-                    console.log(err);
-                    res.send({
-                        status: 500,
-                        success: false,
-                        message: "Internal server error!!"
-                    });
-                });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send({
-                status: 500,
-                success: false,
-                message: "Internal server error!!"
-            });
-        });
+    // 2. Toggle teacher status
+    teacher.status = !teacher.status;
+    await teacher.save();
+
+    // 3. Update linked user status (assuming teacher.userId exists)
+    const user = await userModel.findById(teacher.userId);
+    if (user) {
+      user.status = teacher.status; // keep same as teacher
+      await user.save();
+    }
+
+    return res.status(200).send({
+      success: true,
+      message: "Status updated successfully!!",
+      data: { teacher, user },
+    });
+  } catch (err) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong!!",
+      error: err.message,
+    });
+  }
 };
 
 // Update teacher details
-const update= (req, res) => {
-    const teacherId = req.params.id;
-    const updateData = {};
+const update = async (req, res) => {
+  try {
+    const { _id } = req.body;
+
+    if (!_id) {
+      return res.status(422).send({
+        success: false,
+        message: "_id is required",
+      });
+    }
+
+    // Prepare update object
+    let updateData = {};
 
     if (req.body.name) updateData.name = req.body.name;
-    if (req.body.email) updateData.email = req.body.email;
-    if (req.body.password) updateData.password = bcrypt.hashSync(req.body.password, 10);
     if (req.body.department) updateData.department = req.body.department;
     if (req.body.specialization) updateData.specialization = req.body.specialization;
     if (req.body.bio) updateData.bio = req.body.bio;
+    if (req.body.status !== undefined) updateData.status = req.body.status;
 
-    teacherModel.findByIdAndUpdate(teacherId, updateData, { new: true })
-        .then((updatedTeacher) => {
-            if (!updatedTeacher) {
-                return res.send({
-                    status: 404,
-                    success: false,
-                    message: "Teacher not found!!"
-                });
-            }
-            res.send({
-                status: 200,
-                success: true,
-                message: "Teacher updated successfully!!",
-                data: updatedTeacher
-            });
-        })
-        .catch((err) => {
-            console.log(err);
-            res.send({
-                status: 500,
-                success: false,
-                message: "Internal server error!!"
-            });
-        });
+    // Update teacher
+    const updatedTeacher = await teacherModel.findByIdAndUpdate(
+      _id,
+      { $set: updateData },
+      { new: true } // return updated document
+    );
+
+    if (!updatedTeacher) {
+      return res.status(404).send({
+        success: false,
+        message: "Teacher not found",
+      });
+    }
+
+    res.status(200).send({
+      success: true,
+      message: "Teacher updated successfully",
+      data: updatedTeacher,
+    });
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Error while updating teacher",
+      error: error.message,
+    });
+  }
 };
 
 
-module.exports = { register, getall,getSingle,getStatus,update};
+module.exports = { register, getall,getSingle,changeStatus,update};
