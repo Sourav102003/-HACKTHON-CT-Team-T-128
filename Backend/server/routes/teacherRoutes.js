@@ -5,14 +5,14 @@ const studentController = require("../apis/student/studentController")
 const teacherController = require("../apis/teacher/teacherController")
 teacherroutes.post("/user/login",userController.Login)
 teacherroutes.post("/teacher/register",teacherController.register)
+teacherroutes.post("/student/getSingle",studentController.getSingle)
 
-    teacherroutes.use(require("../middleware/teachertoken"))
 
 teacherroutes.post("/teacher/update",teacherController.update)
 teacherroutes.post("/student/getall",studentController.getall)
-teacherroutes.post("/student/getSingle",studentController.getSingle)
 teacherroutes.post("/student/changeStatus",studentController.changeStatus)
 teacherroutes.post("/student/update",studentController.update)
+teacherroutes.use(require("../middleware/teachertoken"))
 
 
 
